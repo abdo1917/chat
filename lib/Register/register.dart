@@ -1,7 +1,11 @@
-import 'package:chat/Login_screen.dart';
+import 'package:chat/Register/registerViewModel.dart';
+import 'package:chat/login/Login_screen.dart';
 import 'package:chat/dialog_utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../base.dart';
 
 class Register_Screen extends StatefulWidget {
   static const String routeName= 'Register';
@@ -10,22 +14,32 @@ class Register_Screen extends StatefulWidget {
   State<Register_Screen> createState() => _Register_ScreenState();
 }
 
-class _Register_ScreenState extends State<Register_Screen> {
+class _Register_ScreenState extends BaseState<Register_Screen, Register_viewModel>
+implements RegisterNavigator{
   bool securiedPassword = true;
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
   var formkey = GlobalKey<FormState>();
+
+  @override
+  Register_viewModel initViewModel(){
+    return Register_viewModel();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Container(
-          color: Colors.white,
-          child: Image.asset(
-            'assets/images/background_image.png',
-            width: double.infinity,
-            height: double.infinity,
-            fit: BoxFit.fill,
+        ChangeNotifierProvider(
+          create: (_)=>viewModel ,
+          child: Container(
+            color: Colors.white,
+            child: Image.asset(
+              'assets/images/background_image.png',
+              width: double.infinity,
+              height: double.infinity,
+              fit: BoxFit.fill,
+            ),
           ),
         ),
         Scaffold(
@@ -128,7 +142,7 @@ class _Register_ScreenState extends State<Register_Screen> {
                     ),
                     ElevatedButton(
                         onPressed: () {
-                          Login_Click();
+                          Register_Click();
                         },
                         child: Text('Create Account')),
                     InkWell(
@@ -148,22 +162,13 @@ class _Register_ScreenState extends State<Register_Screen> {
   }
 
   var auth_server= FirebaseAuth.instance;
-  void Login_Click() {
+  void Register_Click() {
     if(formkey.currentState?.validate() == false){
       return;
     }
-    showLoading(context, 'Loading...');
-    auth_server.signInWithEmailAndPassword(
-        email: emailController.text,
-        password: passwordController.text)
-        .then((userCreditinal)  {
-          hideLoading(context);
-          showMessage(context, userCreditinal.user!.uid);
-    })
-    .onError((error, stackTrace) {
-      hideLoading(context);
-      showMessage(context, error.toString());
-    })
-    ;
+    viewModel.Register(emailController.text, passwordController.text);
   }
+
+
+
 }

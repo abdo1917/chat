@@ -1,5 +1,5 @@
-import 'package:chat/Login_screen.dart';
-import 'package:chat/Register.dart';
+import 'package:chat/login/Login_screen.dart';
+import 'package:chat/Register/Register.dart';
 import 'package:chat/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
